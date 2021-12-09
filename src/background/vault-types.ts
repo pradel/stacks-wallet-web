@@ -6,7 +6,7 @@ import { ExtensionMethods, InternalMethods, Message } from '@common/message-type
 type VaultMessage<M extends ExtensionMethods, P> = Omit<Message<M, P>, 'source'>;
 
 type GetWallet = VaultMessage<InternalMethods.getWallet, undefined>;
-type MakeWallet = VaultMessage<InternalMethods.makeWallet, undefined>;
+type MakeSoftwareWallet = VaultMessage<InternalMethods.makeSoftwareWallet, undefined>;
 type CreateNewAccount = VaultMessage<InternalMethods.createNewAccount, undefined>;
 type SignOut = VaultMessage<InternalMethods.signOut, undefined>;
 type LockWallet = VaultMessage<InternalMethods.lockWallet, undefined>;
@@ -21,7 +21,7 @@ export type SwitchAccount = VaultMessage<InternalMethods.switchAccount, number>;
 
 export type VaultActions =
   | GetWallet
-  | MakeWallet
+  | MakeSoftwareWallet
   | StoreSeed
   | CreateNewAccount
   | SignOut

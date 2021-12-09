@@ -5,8 +5,10 @@ import { useAtomCallback } from 'jotai/utils';
 import { LoadingKeys } from '@common/hooks/use-loading';
 import { useSubmitTransactionCallback } from '@common/hooks/use-submit-stx-transaction';
 import { useRawTxIdState } from '@store/transactions/raw.hooks';
-import { rawSignedTxState } from '@store/transactions/raw';
+import { rawDeserializedTxState } from '@store/transactions/raw';
 import { feeEstimationsState } from '@store/transactions/fees';
+
+import { useSignTransactionSoftwareWallet } from './transaction.hooks';
 
 export function useFeeEstimationsState() {
   return useAtom(feeEstimationsState);
@@ -14,6 +16,7 @@ export function useFeeEstimationsState() {
 
 export const useReplaceByFeeSubmitCallBack = () => {
   const [, setTxId] = useRawTxIdState();
+  const signTx = useSignTransactionSoftwareWallet();
 
   const submitTransaction = useSubmitTransactionCallback({
     loadingKey: LoadingKeys.INCREASE_FEE_DRAWER,
@@ -22,16 +25,15 @@ export const useReplaceByFeeSubmitCallBack = () => {
   return useAtomCallback<void, { fee: number; nonce: number }>(
     useCallback(
       async get => {
-        const signedTx = await get(rawSignedTxState, true);
-        if (!signedTx) return;
+        const unsignedTx = await get(rawDeserializedTxState, true);
+        if (!unsignedTx) return;
+        const signedTx = signTx(unsignedTx);
         await submitTransaction({
-          onClose: () => {
-            setTxId(null);
-          },
+          onClose: () => setTxId(null),
           replaceByFee: true,
         })(signedTx);
       },
-      [setTxId, submitTransaction]
+      [setTxId, submitTransaction, signTx]
     )
   );
 };

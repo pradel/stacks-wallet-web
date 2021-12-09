@@ -13,7 +13,7 @@ export enum ExternalMethods {
 
 export enum InternalMethods {
   getWallet = 'getWallet',
-  makeWallet = 'makeWallet',
+  makeSoftwareWallet = 'makeSoftwareWallet',
   storeSeed = 'storeSeed',
   createNewAccount = 'createNewAccount',
   signOut = 'signOut',

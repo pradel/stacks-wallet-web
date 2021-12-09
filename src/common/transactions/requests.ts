@@ -15,6 +15,12 @@ function getTransactionVersionFromRequest(tx: TransactionPayload) {
 
 export const UNAUTHORIZED_TX_REQUEST =
   'The transaction request provided is not signed by this wallet.';
+
+interface VerifyTxRequestArgs {
+  requestToken: string;
+  wallet: Wallet;
+  appDomain: string;
+}
 /**
  * Verify a transaction request.
  * A transaction request is a signed JWT that is created on an app,
@@ -40,11 +46,7 @@ export const verifyTxRequest = async ({
   requestToken,
   wallet,
   appDomain,
-}: {
-  requestToken: string;
-  wallet: Wallet;
-  appDomain: string;
-}): Promise<TransactionPayload> => {
+}: VerifyTxRequestArgs): Promise<TransactionPayload> => {
   const token = decodeToken(requestToken);
   const tx = token.payload as unknown as TransactionPayload;
   const { publicKey, stxAddress } = tx;

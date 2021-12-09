@@ -1,5 +1,5 @@
 import type { MempoolTransaction, Transaction } from '@stacks/stacks-blockchain-api-types';
-import { Account, getStxAddress } from '@stacks/wallet-sdk';
+import { Account } from '@stacks/wallet-sdk';
 import { atomFamily, atomWithDefault, atomWithStorage } from 'jotai/utils';
 import { atom } from 'jotai';
 import BigNumber from 'bignumber.js';
@@ -9,7 +9,7 @@ import { makeLocalDataKey } from '@common/store-utils';
 import { transactionRequestStxAddressState } from '@store/transactions/requests';
 import { currentNetworkState } from '@store/network/networks';
 import { walletState } from '@store/wallet/wallet';
-import { transactionNetworkVersionState } from '@store/transactions';
+import { addressNetworkVersionState } from '@store/transactions';
 import {
   accountBalancesAnchoredBigNumber,
   accountBalancesUnanchoredBigNumberState,
@@ -20,6 +20,7 @@ import {
 import { AccountWithAddress } from './account.models';
 import { accountTransactionsWithTransfersState } from './transactions';
 import { DEFAULT_LIST_LIMIT } from '@common/constants';
+import { pubKeyfromPrivKey, publicKeyToAddress } from '@stacks/transactions';
 
 /**
  * --------------------------------------
@@ -52,11 +53,11 @@ export const accountsState = atomWithDefault<Account[] | undefined>(get => {
 // map through the accounts and get the address for the current network mode (testnet|mainnet)
 export const accountsWithAddressState = atom<AccountWithAddress[] | undefined>(get => {
   const accounts = get(accountsState);
-  const transactionVersion = get(transactionNetworkVersionState);
+  const addressVersion = get(addressNetworkVersionState);
   if (!accounts) return undefined;
 
   return accounts.map(account => {
-    const address = getStxAddress({ account, transactionVersion });
+    const address = publicKeyToAddress(addressVersion, pubKeyfromPrivKey(account.stxPrivateKey));
     return { ...account, address };
   });
 });
@@ -107,12 +108,7 @@ export const currentAccountStxAddressState = atom<string | undefined>(
   get => get(currentAccountState)?.address
 );
 
-// gets the private key of the current account
-export const currentAccountPrivateKeyState = atom<string | undefined>(
-  get => get(currentAccountState)?.stxPrivateKey
-);
-
-const accountAvailableStxBalanceState = atomFamily<string, BigNumber | undefined>(
+export const accountAvailableStxBalanceState = atomFamily<string, BigNumber | undefined>(
   principal =>
     atom(get => {
       const networkUrl = get(currentNetworkState).url;

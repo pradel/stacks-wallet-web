@@ -57,7 +57,7 @@ export function useVaultMessenger() {
   const getWallet = () =>
     innerMessageWrapper({ method: InternalMethods.getWallet, payload: undefined });
   const makeWallet = () =>
-    innerMessageWrapper({ method: InternalMethods.makeWallet, payload: undefined });
+    innerMessageWrapper({ method: InternalMethods.makeSoftwareWallet, payload: undefined });
   const createNewAccount = () =>
     innerMessageWrapper({
       method: InternalMethods.createNewAccount,

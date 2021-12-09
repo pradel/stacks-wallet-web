@@ -27,6 +27,7 @@ import { localStacksTransactionInputsState } from '@store/transactions/local-tra
 import { sendFormUnsignedTxState } from '@store/transactions/local-transactions';
 import { generateUnsignedTransaction } from '@common/transactions/generate-unsigned-txs';
 import { customNonceState } from './nonce.hooks';
+import { AddressVersion } from '@stacks/transactions';
 
 export const pendingTransactionState = atom<
   ContractCallPayload | ContractDeployPayload | STXTransferPayload | undefined
@@ -115,6 +116,14 @@ export const transactionNetworkVersionState = atom(get => {
   return whenChainId(chainId)({
     [ChainID.Mainnet]: TransactionVersion.Mainnet,
     [ChainID.Testnet]: TransactionVersion.Testnet,
+  });
+});
+
+export const addressNetworkVersionState = atom(get => {
+  const chainId = get(currentNetworkState)?.chainId;
+  return whenChainId(chainId)({
+    [ChainID.Mainnet]: AddressVersion.MainnetSingleSig,
+    [ChainID.Testnet]: AddressVersion.TestnetSingleSig,
   });
 });
 

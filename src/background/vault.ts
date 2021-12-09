@@ -42,6 +42,10 @@ function getHasSetPassword() {
   return false;
 }
 
+//
+// In memory storage like this is not possible with non-persistent bg scripts
+// necessary for future support of mv3 and mobile safari extensions
+// https://github.com/hirosystems/stacks-wallet-web/issues/1746
 let inMemoryVault: InMemoryVault = {
   ...defaultVault,
   encryptedSecretKey: localStorage.getItem(encryptedKeyIdentifier) || undefined,
@@ -58,7 +62,7 @@ function persistOptional(storageKey: string, value?: string) {
 }
 
 export async function vaultMessageHandler(message: VaultActions) {
-  inMemoryVault = await vaultReducer(message);
+  inMemoryVault = await vaultMethodHandler(message);
   persistOptional(encryptedKeyIdentifier, inMemoryVault.encryptedSecretKey);
   persistOptional(saltIdentifier, inMemoryVault.salt);
   localStorage.setItem(hasSetPasswordIdentifier, JSON.stringify(inMemoryVault.hasSetPassword));
@@ -99,14 +103,13 @@ function throwUnhandledMethod(message: VaultActions) {
   throw new Error(`Unhandled message: ${JSON.stringify(message, null, 2)}`);
 }
 
-// Reducer to manage the state of the vault
-const vaultReducer = async (message: VaultActions): Promise<InMemoryVault> => {
+async function vaultMethodHandler(message: VaultActions): Promise<InMemoryVault> {
   switch (message.method) {
     case InternalMethods.getWallet:
       return {
         ...inMemoryVault,
       };
-    case InternalMethods.makeWallet: {
+    case InternalMethods.makeSoftwareWallet: {
       const secretKey = generateSecretKey(256);
       const _wallet = await generateWallet({ secretKey, password: DEFAULT_PASSWORD });
       return {
@@ -207,4 +210,4 @@ const vaultReducer = async (message: VaultActions): Promise<InMemoryVault> => {
     default:
       throwUnhandledMethod(message);
   }
-};
+}

@@ -1,6 +1,6 @@
 import { UseQueryOptions } from 'react-query';
 import type { TransactionPayload } from '@stacks/connect';
-import { ContractInterfaceFunction } from '@stacks/rpc-client';
+import type { ContractInterfaceFunction } from '@stacks/rpc-client';
 
 import { ContractInterfaceResponseWithFunctions } from '@models/contract-types';
 import { useGetContractInterface } from '@query/contract/contract.query';
