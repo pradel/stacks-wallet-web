@@ -53,18 +53,14 @@ let inMemoryVault: InMemoryVault = {
   salt: localStorage.getItem(saltIdentifier) || undefined,
 };
 
-function persistOptional(storageKey: string, value?: string) {
-  if (value) {
-    localStorage.setItem(storageKey, value);
-  } else {
-    localStorage.removeItem(storageKey);
-  }
+function setToLocalstorageIfDefined(storageKey: string, value?: string) {
+  if (value) localStorage.setItem(storageKey, value);
 }
 
 export async function vaultMessageHandler(message: VaultActions) {
   inMemoryVault = await vaultMethodHandler(message);
-  persistOptional(encryptedKeyIdentifier, inMemoryVault.encryptedSecretKey);
-  persistOptional(saltIdentifier, inMemoryVault.salt);
+  setToLocalstorageIfDefined(encryptedKeyIdentifier, inMemoryVault.encryptedSecretKey);
+  setToLocalstorageIfDefined(saltIdentifier, inMemoryVault.salt);
   localStorage.setItem(hasSetPasswordIdentifier, JSON.stringify(inMemoryVault.hasSetPassword));
   return inMemoryVault;
 }
