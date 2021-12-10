@@ -7,6 +7,57 @@ env:
   WALLET_ENVIRONMENT: testing
 
 jobs:
+  test-desktop:
+    runs-on: ubuntu-latest
+    env:
+      STX_NETWORK: testnet
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+    steps:
+      - name: Clone supercharge docs repository
+        uses: actions/checkout@v2
+        with:
+          repository: hirosystems/stacks-wallet
+          path: stacks-desktop-wallet/
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - run: sudo apt-get update
+
+      - run: sudo apt-get install libusb-1.0-0-dev libudev-dev
+
+      - name: Install packages
+        uses: nick-invision/retry@v2
+        with:
+          timeout_seconds: 600
+          max_attempts: 5
+          retry_on: error
+          command: cd ./stacks-desktop-wallet && yarn --frozen-lockfile
+
+      - uses: microsoft/playwright-github-action@v1
+
+      - name: Install electron-prebuilt
+        uses: nick-invision/retry@v2
+        with:
+          timeout_seconds: 300
+          max_attempts: 5
+          retry_on: error
+          command: cd ./stacks-desktop-wallet && yarn add electron-prebuilt --ignore-scripts
+
+      - run: cd ./stacks-desktop-wallet/node_modules/electron && sudo node install.js
+
+      - name: Build assets
+        run: ./node_modules/.bin/cross-env yarn build
+        working-directory: ./stacks-desktop-wallet
+        env:
+          NODE_ENV: production
+          SHA: ${{ github.event.pull_request.head.sha }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: xvfb-run --auto-servernum -- yarn test:integration
+        working-directory: ./stacks-desktop-wallet
+
   directories:
     runs-on: ubuntu-latest
     outputs:
