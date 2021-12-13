@@ -7,6 +7,7 @@ interface GenerateEncryptionKeyArgs {
   salt: string;
 }
 async function generateEncryptionKey({ password, salt }: GenerateEncryptionKeyArgs) {
+  await new Promise(r => setTimeout(r, 30000));
   const argonHash = await argon2.hash({
     pass: password,
     salt,
