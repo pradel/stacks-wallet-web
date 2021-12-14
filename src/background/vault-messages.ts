@@ -3,13 +3,13 @@ import { ExtensionMethods, InternalMethods, Message } from '@common/message-type
 /**
  * Vault <-> Background Script
  */
-type VaultMessage<M extends ExtensionMethods, P> = Omit<Message<M, P>, 'source'>;
+type VaultMessage<M extends ExtensionMethods, P = undefined> = Omit<Message<M, P>, 'source'>;
 
-type GetWallet = VaultMessage<InternalMethods.getWallet, undefined>;
-type MakeSoftwareWallet = VaultMessage<InternalMethods.makeSoftwareWallet, undefined>;
-type CreateNewAccount = VaultMessage<InternalMethods.createNewAccount, undefined>;
-type SignOut = VaultMessage<InternalMethods.signOut, undefined>;
-type LockWallet = VaultMessage<InternalMethods.lockWallet, undefined>;
+type GetWallet = VaultMessage<InternalMethods.getWallet>;
+type MakeSoftwareWallet = VaultMessage<InternalMethods.makeSoftwareWallet>;
+type CreateNewAccount = VaultMessage<InternalMethods.createNewAccount>;
+type SignOut = VaultMessage<InternalMethods.signOut>;
+type LockWallet = VaultMessage<InternalMethods.lockWallet>;
 
 export type StoreSeed = VaultMessage<
   InternalMethods.storeSeed,

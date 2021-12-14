@@ -47,10 +47,19 @@ export const WelcomePage = memo(() => {
   }, [encryptedSecretKey, hasGeneratedWallet, hasSetPassword, navigate]);
 
   return (
-    <WelcomeLayout
-      isGeneratingWallet={isGeneratingWallet}
-      onStartOnboarding={() => startOnboarding()}
-      onRestoreWallet={() => navigate(RouteUrls.SignIn)}
-    />
+    <>
+      <button
+        onClick={() => {
+          console.log('skdfjsdl');
+        }}
+      >
+        ledger
+      </button>
+      <WelcomeLayout
+        isGeneratingWallet={isGeneratingWallet}
+        onStartOnboarding={() => startOnboarding()}
+        onRestoreWallet={() => navigate(RouteUrls.SignIn)}
+      />
+    </>
   );
 });

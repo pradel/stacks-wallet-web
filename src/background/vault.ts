@@ -8,7 +8,7 @@ import {
   Wallet as SDKWallet,
 } from '@stacks/wallet-sdk';
 import { gaiaUrl } from '@common/constants';
-import type { VaultActions } from '@background/vault-types';
+import type { VaultActions } from '@background/vault-messages';
 import { decryptMnemonic, encryptMnemonic } from '@background/crypto/mnemonic-encryption';
 import { DEFAULT_PASSWORD } from '@common/types';
 import { InternalMethods } from '@common/message-types';

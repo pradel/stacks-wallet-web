@@ -1,6 +1,6 @@
 import { useAtomCallback, useAtomValue } from 'jotai/utils';
 import type { InMemoryVault } from '@background/vault';
-import type { VaultActions } from '@background/vault-types';
+import type { VaultActions } from '@background/vault-messages';
 import { gaiaUrl } from '@common/constants';
 import { useOnboardingState } from '@common/hooks/auth/use-onboarding-state';
 import { textToBytes } from '@common/store-utils';

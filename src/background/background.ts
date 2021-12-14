@@ -15,11 +15,12 @@ import {
   MessageFromContentScript,
 } from '@common/message-types';
 
-import type { VaultActions } from '@background/vault-types';
+import type { VaultActions } from '@background/vault-messages';
 import { popupCenter } from '@background/popup';
 import { vaultMessageHandler } from '@background/vault';
 import { initContextMenuActions } from '@background/init-context-menus';
 import { initSentry } from '@common/sentry-init';
+import { logger } from '@common/logger';
 
 const IS_TEST_ENV = process.env.TEST_ENV === 'true';
 
@@ -98,7 +99,10 @@ chrome.runtime.onConnect.addListener(port =>
 chrome.runtime.onMessage.addListener((message: VaultActions, sender, sendResponse) =>
   Sentry.wrap(() => {
     // Only respond to internal messages from our UI, not content scripts in other applications
-    if (!sender.url?.startsWith(chrome.runtime.getURL(''))) return;
+    if (!sender.url?.startsWith(chrome.runtime.getURL(''))) {
+      logger.debug('');
+      return;
+    }
     void vaultMessageHandler(message).then(sendResponse).catch(sendResponse);
     // Return true to specify that we are responding async
     return true;

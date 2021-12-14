@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { SetPassword, StoreSeed, UnlockWallet, SwitchAccount } from '@background/vault-types';
+import { SetPassword, StoreSeed, UnlockWallet, SwitchAccount } from '@background/vault-messages';
 import { InternalMethods } from '@common/message-types';
 import { useInnerMessageWrapper } from '@store/wallet/wallet.hooks';
 import { clearSessionLocalData } from '@common/store-utils';
@@ -56,20 +56,25 @@ export function useVaultMessenger() {
 
   const getWallet = () =>
     innerMessageWrapper({ method: InternalMethods.getWallet, payload: undefined });
+
   const makeWallet = () =>
     innerMessageWrapper({ method: InternalMethods.makeSoftwareWallet, payload: undefined });
+
   const createNewAccount = () =>
     innerMessageWrapper({
       method: InternalMethods.createNewAccount,
       payload: undefined,
     });
+
   const handleSignOut = () =>
     innerMessageWrapper({ method: InternalMethods.signOut, payload: undefined });
+
   const signOut = async () => {
     await handleSignOut();
     void analytics.track('sign_out');
     clearSessionLocalData();
   };
+
   const lockWallet = () =>
     innerMessageWrapper({ method: InternalMethods.lockWallet, payload: undefined });
 

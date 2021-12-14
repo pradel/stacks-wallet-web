@@ -1,6 +1,12 @@
 name: Integration tests
 
-on: [pull_request]
+on:
+  pull_request:
+  workflow_dispatch:
+  inputs:
+    url:
+      description: 'API URL to test'
+      required: true
 
 env:
   CI: true
