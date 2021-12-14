@@ -14,6 +14,7 @@ import { validatePassword, blankPasswordValidation } from '@common/validation/va
 import { Body, Caption } from '@components/typography';
 import { Header } from '@components/header';
 import { RouteUrls } from '@routes/route-urls';
+import { getWalletConfig } from '@common/wallet/wallet-config-helper';
 
 interface SetPasswordProps {
   placeholder?: string;
@@ -33,6 +34,12 @@ export const SetPasswordPage: React.FC<SetPasswordProps> = ({ placeholder }) => 
   useEffect(() => {
     void analytics.page('view', '/set-password');
   }, [analytics]);
+
+  useEffect(() => {
+    // Proactively fetch the gaia wallet config
+    if (!wallet) return;
+    void getWalletConfig(wallet);
+  });
 
   const submit = useCallback(
     async (password: string) => {
